@@ -32,6 +32,7 @@ class Tracker:
 		self.reid_iou_threshold = tracker_cfg['reid_iou_threshold']
 		self.do_align = tracker_cfg['do_align']
 		self.motion_model_cfg = tracker_cfg['motion_model']
+		self.person_area_thresh = tracker_cfg['person_area_thresh']
 
 		self.warp_mode = eval(tracker_cfg['warp_mode'])
 		self.number_of_iterations = tracker_cfg['number_of_iterations']
@@ -271,9 +272,11 @@ class Tracker:
 
 		if boxes.nelement() > 0:
 			boxes = clip_boxes_to_image(boxes, blob['img'].shape[-2:])
+            
+			areas = torch.FloatTensor([(b[2] - b[0]) * (b[3] - b[1]) for b in boxes]).cuda()
 
 			# Filter out tracks that have too low person score
-			inds = torch.gt(scores, self.detection_person_thresh).nonzero().view(-1)
+			inds = (torch.gt(scores, self.detection_person_thresh) & torch.gt(areas, self.person_area_thresh)).nonzero().view(-1)
 		else:
 			inds = torch.zeros(0).cuda()
 
