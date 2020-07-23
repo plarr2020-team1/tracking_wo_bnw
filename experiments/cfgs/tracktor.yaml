@@ -30,9 +30,9 @@ tracktor:
 
   tracker:
     # FRCNN score threshold for detections
-    detection_person_thresh: 0.975
+    detection_person_thresh: 0.94
     # Eliminate small boxes
-    person_area_thresh: 10000
+    person_area_thresh: 8500
     # FRCNN score threshold for keeping the track alive
     regression_person_thresh: 0.5
     # NMS threshold for detection
